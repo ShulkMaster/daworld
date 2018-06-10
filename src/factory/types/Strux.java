@@ -18,7 +18,7 @@ public class Strux extends GameObject {
     }
 
     @Override
-    public void InitSelf() {
+    public void actionPerformed() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

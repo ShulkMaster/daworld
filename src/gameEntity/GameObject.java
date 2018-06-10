@@ -24,17 +24,12 @@ public abstract class GameObject {
             String fullbar = "████████████████████";
             int aux = (int) ((getVidaPersent() * 20) / 100);
             fullbar = fullbar.substring(0, aux);
-            System.out.println(aux + "indice");
-            System.out.println("porcentaje:" + getVidaPersent());
             if (aux > 10) {
-                System.out.print("\033[32m" + fullbar);
-                System.out.println("Mayor a 14");
+                System.out.print("\033[32m" + fullbar + " " + getVidaPersent() + "%");
             } else if (aux > 6) {
-                System.out.print("\033[33m" + fullbar);
-                System.out.println("Mayor a 6");
+                System.out.print("\033[33m" + fullbar + " " + getVidaPersent() + "%");
             } else {
-                System.out.print("\033[31m" + fullbar);
-                System.out.println("Mayor a 0");
+                System.out.print("\033[31m" + fullbar + " " + getVidaPersent() + "%");
             }
             System.out.println("\033[30m ");
         } else {
@@ -69,6 +64,6 @@ public abstract class GameObject {
     public void setFasecicle(int fasecicle) {
         this.fasecicle = fasecicle;
     }
-    
-    public abstract void InitSelf();
+
+    public abstract void actionPerformed();
 }

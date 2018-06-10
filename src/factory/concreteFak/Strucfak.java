@@ -23,7 +23,7 @@ public class Strucfak implements ObjMaker {
                // strukx = new CentroMando(2100, R);
                 break;
             case RECURSO:
-                strukx = new Extractor();
+                //strukx = new Extractor();
                 break;
             /*
             case RECURSO2:

@@ -34,12 +34,8 @@ public class Tile extends GameObject {
         return est;
     }
 
-    private void setEst(Estado est) {
-        this.est = est;
-    }
-
     @Override
-    public void InitSelf() {
+    public void actionPerformed() {
     }
 
 }

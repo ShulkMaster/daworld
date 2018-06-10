@@ -1,32 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package factory.types.struchas;
 
 /**
  *
  * @author yury_
  */
-
-import factory.constrains.Structura;
 import gameEntity.GameObject;
 
-public class Extractor implements Structura{
-    
+public class Extractor extends GameObject {
+
     private GameObject recur;
-    
-    public Extractor(){}
+    private int recCant;
+    private final int maxRate;
 
-    @Override
-    public void setContenido(GameObject ctn) {
-        recur = ctn;
+    public Extractor(int vida, int maxr) {
+        super(vida, 2);
+        maxRate = maxr;
+        recCant = 0;
+    }
+
+    public int getResor() {
+        int aux = recCant;
+        recCant = 0;
+        return aux;
     }
 
     @Override
-    public GameObject getContent() {
-        return recur;
+    public void actionPerformed() {
+        recCant += maxRate;
     }
-    
+
 }

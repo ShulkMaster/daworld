@@ -8,14 +8,12 @@ import factory.catalog.*;
 
 public class Match {
 
-    private final Player[] jugadores;
+    public final Player[] jugadores;
     private boolean gameOver = false;
     private int turno;
     private static int FASE;
-    public final int numPlays;
 
     public Match(int numplayer) {
-        numPlays = numplayer;
         jugadores = new Player[numplayer];
         selfInit(numplayer);
         turno = (int) (Math.random() * numplayer);
@@ -57,7 +55,8 @@ public class Match {
         System.out.println("3) Recolectar");
         System.out.println("4) Defender");
         System.out.println("5) Mejorar estructura");
-        System.out.println("6) Saltar turno");
+        System.out.println("6) Ver su estado");
+        System.out.println("7) Saltar turno");
         ejecutar(cPlayer.control.nextInt());
     }
 
@@ -66,11 +65,22 @@ public class Match {
             case 1:
                 System.out.println("A quien atacara:");
                 printPlayer();
-                attack(jugadores[0].control.nextInt());
+                int selecp = jugadores[0].control.nextInt();
+                if (isValidPlayer(selecp)) {
+                    System.out.println("Que atacara: ");
+                    int contador = 0;
+                    for (Player jugado : jugadores) {
+                        if (!jugado.name.equals(jugadores[turno].name)) {
+                            System.out.println((contador + ") ") + jugado.name);
+                            contador += 1;
+                        }
+                    }
+                    InnerController.Attack(jugadores[turno], jugadores[selecp]);
+                }
                 break;
             case 2:
                 System.out.println("Que desea crear:");
-                addStruc();
+                InnerController.addStruck(jugadores[turno]);
                 break;
             case 3: //recolertar
                 break;
@@ -79,9 +89,12 @@ public class Match {
             case 5: //mejorar
                 break;
             case 6:
+                jugadores[turno].battlefield.printContent();
+                break;
+            case 7:
                 System.out.println("Esta seguro?");
-                System.out.println("No = 0  Si = any number");
-                if (jugadores[0].control.nextInt() == 0) {
+                System.out.println("No = any number  Si = 1");
+                if (jugadores[0].control.nextInt() != 1) {
                     printOptions(jugadores[turno]);
                 }
                 break;
@@ -101,7 +114,7 @@ public class Match {
                 jugadoresEnPie += 1;
             }
         }
-        if (jugadoresEnPie == 1) {
+        if (jugadoresEnPie <= 1) {
             gameOver = true;
         }
     }
@@ -120,36 +133,19 @@ public class Match {
         System.out.println("El turno es de: " + jugadores[turno].name);
     }
 
-    private void addStruc() {
-        for (int i = 1; i < Strucha.values().length; i++) {
-            System.out.println(i + ")" + Strucha.values()[i]);
+    private boolean isValidPlayer(int index) {
+        boolean valid = true;
+        if ((index > jugadores.length) || (index < 0)) {
+            valid = false;
+            System.err.println("Jugador" + index + "no existe");
+        } else if (jugadores[turno].name.equals(jugadores[index].name)) {
+            System.err.println("No se puede atacar a si mismo");
+            valid = false;
         }
-        InnerController.addStruck(jugadores[turno]);
+        return valid;
     }
 
-    private void attack(int index) {
-
-        int x, y;
-        System.out.println("Que atacara: ");
-        int contador = 0;
-        for (Player jugado : jugadores) {
-            if (!jugado.name.equals(jugadores[turno].name)) {
-                System.out.println((contador + ") ") + jugado.name);
-                contador += 1;
-            }
-        }
-        jugadores[index].battlefield.printContent();
-        System.out.println("Ingrese columna");
-        x = jugadores[turno].control.nextInt();
-        System.out.println("Ingrese fila");
-        y = jugadores[turno].control.nextInt();
-        jugadores[index].battlefield.receiveAttack(x, y, 25);
+    public int getTurno() {
+        return turno;
     }
-
-    private boolean isValidPos(int posx, int posy) {
-
-        return true;
-
-    }
-
 }
