@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package factory.types.struchas;
+package factory.gameObjs.troops;
 
 /**
  *
  * @author yury_
  */
-public class Laboratorio {
+public class Tropabasic {
     
 }

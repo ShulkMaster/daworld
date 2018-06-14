@@ -5,11 +5,12 @@ package gameWorld;
  * @author yury_
  */
 import gameEntity.GameObject;
+import factory.constrains.Strux;
 import factory.catalog.Estado;
 
 public class Tile extends GameObject {
 
-    private GameObject contenido;
+    private Strux contenido;
     private Estado est;
 
     public Tile(int vida, int fase) {
@@ -17,11 +18,11 @@ public class Tile extends GameObject {
         est = Estado.VACIO;
     }
 
-    public GameObject getContenido() {
+    public Strux getContenido() {
         return contenido;
     }
 
-    public void setContenido(GameObject contenido) {
+    public void setContenido(Strux contenido) {
         if (this.est == Estado.VACIO) {
             this.contenido = contenido;
             est = Estado.ACTIVO;
@@ -35,7 +36,23 @@ public class Tile extends GameObject {
     }
 
     @Override
-    public void actionPerformed() {
+    public void printCtn() {
+        if (est.equals(Estado.ACTIVO)) {
+            contenido.printCtn();
+        }else{
+            System.out.println(est);
+        }
+
+    }
+
+    @Override
+    public void action() {
+        if (est.equals(Estado.ACTIVO)) {
+            if (contenido.getVidaCurrent() <= 0) {
+                System.err.println(contenido.name + " Fue destruido");
+                est = Estado.VACIO;
+            }
+        }
     }
 
 }

@@ -1,17 +1,18 @@
 package gameEntity;
 
+import factory.catalog.Strucha;
+
 /**
  *
  * @author yury_
  */
-import factory.catalog.*;
-
 public class Match {
 
     public final Player[] jugadores;
     private boolean gameOver = false;
     private int turno;
-    private static int FASE;
+    private int subfase = 0;
+    private static int FASE = 0;
 
     public Match(int numplayer) {
         jugadores = new Player[numplayer];
@@ -26,37 +27,65 @@ public class Match {
     }
 
     public void Start() {
-        System.out.println("Inicia player: " + jugadores[turno].name);
+        infoFase();
         while (!gameOver) {
-            System.out.println("Turno de: " + jugadores[turno].name);
             jugada();
             togglePlayer();
             checkWin();
         }
     }
 
+    private void infoFase() {
+        System.out.println("\033[34m_________________________________________");
+        System.out.println("\033[34m               FASE " + FASE);
+        System.out.println("\033[34m_________________________________________");
+        System.out.println("\033[30m ");
+    }
+
+    private void faseCalculation() {
+        if (subfase >= jugadores.length) {
+            incrementFase();
+            subfase = 0;
+            infoFase();
+        }
+    }
+
+    private void incrementFase() {
+        for (Player cplayer : jugadores) {
+            cplayer.battlefield.updateContent();
+            cplayer.battlefield.clearContent();
+        }
+        FASE += 1;
+    }
+
     private void jugada() {
         if (!jugadores[turno].defeated) {
             while (jugadores[turno].moveAvailable) {
                 printOptions(jugadores[turno]);
-                jugadores[turno].moveAvailable = false;
             }
             jugadores[turno].moveAvailable = true;
-            FASE += 1;
+            subfase += 1;
+            faseCalculation();
         } else {
             System.out.println("Este jugador ya perdio: " + jugadores[turno].name);
+            faseCalculation();
         }
 
     }
 
     private void printOptions(Player cPlayer) {
+        System.out.println("\033[34m_________________________________________");
+        System.out.println("\033[34m               Turno " + jugadores[turno].name);
+        System.out.println("\033[34m_________________________________________");
+        System.out.println("\033[30m ");
         System.out.println("1) Atacar");
-        System.out.println("2) Contruir");
-        System.out.println("3) Recolectar");
-        System.out.println("4) Defender");
-        System.out.println("5) Mejorar estructura");
-        System.out.println("6) Ver su estado");
-        System.out.println("7) Saltar turno");
+        System.out.println("2) Entrenar");
+        System.out.println("3) Contruir");
+        System.out.println("4) Recolectar");
+        System.out.println("5) Defender");
+        System.out.println("6) Mejorar estructura");
+        System.out.println("7) Ver su estado");
+        System.out.println("8) Saltar turno");
         ejecutar(cPlayer.control.nextInt());
     }
 
@@ -79,23 +108,30 @@ public class Match {
                 }
                 break;
             case 2:
+                InnerController.traintroops(jugadores[turno]);
+                break;
+            case 3:
                 System.out.println("Que desea crear:");
                 InnerController.addStruck(jugadores[turno]);
                 break;
-            case 3: //recolertar
+            case 4:
+                jugadores[turno].battlefield.execute(jugadores[turno], Strucha.RECURSO);
                 break;
-            case 4: //defender
-                break;
-            case 5: //mejorar
+            case 5: //def
                 break;
             case 6:
-                jugadores[turno].battlefield.printContent();
+                //mejorar
                 break;
             case 7:
+                jugadores[turno].battlefield.printContent();
+                break;
+            case 8:
                 System.out.println("Esta seguro?");
                 System.out.println("No = any number  Si = 1");
                 if (jugadores[0].control.nextInt() != 1) {
                     printOptions(jugadores[turno]);
+                } else {
+                    jugadores[turno].moveAvailable = false;
                 }
                 break;
             default:
@@ -130,7 +166,6 @@ public class Match {
     private void togglePlayer() {
         int nPlayer = jugadores.length;
         turno = (turno + 1) % nPlayer;
-        System.out.println("El turno es de: " + jugadores[turno].name);
     }
 
     private boolean isValidPlayer(int index) {

@@ -4,15 +4,18 @@ package gameWorld;
  *
  * @author yury_
  */
-import gameEntity.GameObject;
 import factory.catalog.Estado;
-import factory.types.Strux;
+import factory.catalog.Strucha;
+import factory.constrains.Strux;
+import factory.gameObjs.struchas.CentroMando;
 import gameEntity.Player;
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 public class Plano {
 
     private final Tile[][] celdas;
+    public CentroMando CM;
 
     public Plano(int filas, int columna) {
         celdas = new Tile[filas][columna];
@@ -21,12 +24,15 @@ public class Plano {
 
     public void addCommandCenter(Player Mylord) {
         if (Mylord.battlefield.celdas[0][0].getEst().equals(Estado.VACIO)) {
-            Mylord.battlefield.celdas[0][0].setContenido(new Strux(1500, 0));
-            Mylord.battlefield.celdas[0][0].getContenido().name = "centro de Mando: " + Mylord.name;
+            CentroMando ctn = new CentroMando(1500, Mylord.getRaza());
+            ctn.nameit();
+            CM = ctn;
+            Mylord.battlefield.celdas[0][0].setContenido(ctn);
+            Mylord.battlefield.celdas[0][0].getContenido().name += " de " + Mylord.name;
         }
     }
 
-    public void addGameObject(int x, int y, GameObject obj) {
+    public void addGameObject(int x, int y, Strux obj) {
         if ((x > 0) || (y > 0)) {
             celdas[x][y].setContenido(obj);
         } else {
@@ -35,7 +41,7 @@ public class Plano {
         }
     }
 
-    public void addGameObject(Dimension dim, GameObject obj) {
+    public void addGameObject(Dimension dim, Strux obj) {
         if (isValidPos(dim.width, dim.height)) {
             celdas[dim.width][dim.height].setContenido(obj);
         } else {
@@ -51,13 +57,10 @@ public class Plano {
     private void wipeTiles() {
         int iter1 = celdas.length;
         int iter2 = celdas[0].length;
-        int conter = 0;
         for (int i = 0; i < iter1; i++) {
             for (int j = 0; j < iter2; j++) {
                 celdas[i][j] = new Tile(0, 0);
-                System.out.println("Se creo tile: " + conter);
                 celdas[i][j].name = ("TILE " + i) + j;
-                conter += 1;
             }
         }
     }
@@ -74,23 +77,6 @@ public class Plano {
         }
     }
 
-    public void printContent() {
-        int iter1 = celdas.length;
-        int iter2 = celdas[0].length;
-        for (int i = 0; i < iter1; i++) {
-            for (int j = 0; j < iter2; j++) {
-                if (celdas[i][j].getEst().equals(Estado.ACTIVO)) {
-                    System.out.print("P(" + i + ", " + j + ") " + celdas[i][j].getContenido().name);
-                    System.out.print(celdas[i][j].getContenido().getVidaCurrent() + " UDV ");
-                    celdas[i][j].getContenido().printVidaBar();
-                } else {
-                    System.out.println("P(" + i + ", " + j + ") " + celdas[i][j].getEst());
-                }
-            }
-        }
-
-    }
-
     private boolean isValidPos(int posx, int posy) {
         boolean valid = true;
         if ((posx >= celdas.length) || (posx < 0)) {
@@ -100,4 +86,88 @@ public class Plano {
         }
         return valid;
     }
+
+    public boolean morObj() {
+        boolean moreObj = false;
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        int more = 0;
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                if (celdas[i][j].getEst().equals(Estado.ACTIVO)) {
+                    more += 1;
+                }
+            }
+        }
+        if (more > 1) {
+            moreObj = true;
+        }
+        return moreObj;
+    }
+
+    public void printContent() {
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                System.out.print("P(" + i + ", " + j + "): ");
+                celdas[i][j].printCtn();
+            }
+        }
+    }
+
+    public void clearContent() {
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                celdas[i][j].action();
+            }
+        }
+    }
+
+    public void updateContent() {
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                if (celdas[i][j].getEst().equals(Estado.ACTIVO)) {
+                    celdas[i][j].getContenido().action();
+                }
+            }
+        }
+    }
+
+    public void execute(Player lolord, Strucha exetur) {
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                if (celdas[i][j].getEst().equals(Estado.ACTIVO)) {
+                    if (celdas[i][j].getContenido().type.equals(exetur)) {
+                        celdas[i][j].getContenido().exec(lolord);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public ArrayList<Strux> getStrucType(Strucha typexer) {
+        int iter1 = celdas.length;
+        int iter2 = celdas[0].length;
+        ArrayList<Strux> aux = new ArrayList<>();
+        for (int i = 0; i < iter1; i++) {
+            for (int j = 0; j < iter2; j++) {
+                if (celdas[i][j].getEst().equals(Estado.ACTIVO)) {
+                    if (celdas[i][j].getContenido().type.equals(typexer)) {
+                        aux.add(celdas[i][j].getContenido());
+                    }
+                }
+            }
+        }
+        return aux;
+
+    }
+
 }

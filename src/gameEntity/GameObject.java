@@ -20,16 +20,18 @@ public abstract class GameObject {
     }
 
     public void printVidaBar() {
+        System.out.print(name + " ");
+        System.out.print(getVidaCurrent() + " UDV ");
         if (vidacurrent > 0) {
             String fullbar = "████████████████████";
-            int aux = (int) ((getVidaPersent() * 20) / 100);
+            int aux = (int) ((getPersent(vidacurrent, VIDAInicial) * 20) / 100);
             fullbar = fullbar.substring(0, aux);
             if (aux > 10) {
-                System.out.print("\033[32m" + fullbar + " " + getVidaPersent() + "%");
+                System.out.print("\033[32m" + fullbar + " " + getPersent(vidacurrent, VIDAInicial) + "%");
             } else if (aux > 6) {
-                System.out.print("\033[33m" + fullbar + " " + getVidaPersent() + "%");
+                System.out.print("\033[33m" + fullbar + " " + getPersent(vidacurrent, VIDAInicial) + "%");
             } else {
-                System.out.print("\033[31m" + fullbar + " " + getVidaPersent() + "%");
+                System.out.print("\033[31m" + fullbar + " " + getPersent(vidacurrent, VIDAInicial) + "%");
             }
             System.out.println("\033[30m ");
         } else {
@@ -49,8 +51,8 @@ public abstract class GameObject {
         return vidacurrent;
     }
 
-    public int getVidaPersent() {
-        return (int) ((vidacurrent * 100) / VIDAInicial);
+    public int getPersent(int cInd, int iInd) {
+        return (int) ((cInd * 100) / iInd);
     }
 
     public void setDamage(int damage) {
@@ -65,5 +67,7 @@ public abstract class GameObject {
         this.fasecicle = fasecicle;
     }
 
-    public abstract void actionPerformed();
+    public abstract void printCtn();
+
+    public abstract void action();
 }
