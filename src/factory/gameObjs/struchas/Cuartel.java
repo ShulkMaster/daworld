@@ -125,7 +125,7 @@ public class Cuartel extends Strux {
     public void printCtn() {
         if (isBuild()) {
             printVidaBar();
-            if (activaTroop(troopin) > 0) {
+            if (activaTroop(troopin) >= 0) {
                 String fullbar = "████████████████████";
                 int aux = (int) (getRespercen(activaTroop(troopin)) * 20) / 100;
                 fullbar = fullbar.substring(0, aux);

@@ -27,22 +27,23 @@ public class InnerController {
     }
 
     public static void Attack(Player attacker, Player victim) {
-        int x, y;
+        int x, y, zanverx = 0;
+        ArrayList<Strux> mono = attacker.battlefield.getStrucType(Strucha.CUARTEL);
         victim.battlefield.printContent();
         System.out.println("Ingrese columna");
         x = attacker.control.nextInt();
         System.out.println("Ingrese fila");
         y = attacker.control.nextInt();
         if ((x == 0) && (y == 0) && !victim.battlefield.morObj()) {
-            victim.battlefield.receiveAttack(x, y, 300);
+            zanverx = mono.stream().map((temp) -> temp.getMAX()).reduce(zanverx, Integer::sum);
+            victim.battlefield.receiveAttack(x, y, zanverx);
+             System.out.println("Son de daño:" + zanverx);
         } else if ((x == 0) && (y == 0) && victim.battlefield.morObj()) {
             System.err.println("No se puede atacar al centro de mando si hay mas edificion en pie");
         } else {
-            ArrayList<Strux> mono = attacker.battlefield.getStrucType(Strucha.CUARTEL);
-            int zanverx = 0;
             zanverx = mono.stream().map((temp) -> temp.getMAX()).reduce(zanverx, Integer::sum);
             victim.battlefield.receiveAttack(x, y, zanverx);
-            System.out.println("Son de daño:"+zanverx);
+            System.out.println("Son de daño:" + zanverx);
         }
     }
 

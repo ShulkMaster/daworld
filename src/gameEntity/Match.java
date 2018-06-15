@@ -98,13 +98,6 @@ public class Match {
                 int selecp = jugadores[0].control.nextInt();
                 if (isValidPlayer(selecp)) {
                     System.out.println("Que atacara: ");
-                    int contador = 0;
-                    for (Player jugado : jugadores) {
-                        if (!jugado.name.equals(jugadores[turno].name)) {
-                            System.out.println((contador + ") ") + jugado.name);
-                            contador += 1;
-                        }
-                    }
                     InnerController.Attack(jugadores[turno], jugadores[selecp]);
                 }
                 break;
