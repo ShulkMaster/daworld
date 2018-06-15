@@ -31,7 +31,7 @@ public class Player {
         name = control.nextLine();
         System.out.println("Seleccione su raza");
         razaPicker();
-        battlefield = new Plano(3, 4);
+        battlefield = new Plano(3, 3);
         battlefield.addCommandCenter(this);
     }
 

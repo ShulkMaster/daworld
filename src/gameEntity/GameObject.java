@@ -5,10 +5,12 @@ package gameEntity;
  * @author yury_
  */
 import java.awt.Dimension;
+import core.Game;
 
 public abstract class GameObject {
 
-    private int vidacurrent, fasecicle;
+    private int vidacurrent;
+    private final int fasecicle;
     private final int VIDAInicial;
     private Dimension location;
     public String name;
@@ -16,7 +18,7 @@ public abstract class GameObject {
     public GameObject(int vida, int fase) {
         this.vidacurrent = vida;
         VIDAInicial = vida;
-        this.fasecicle = fase;
+        this.fasecicle = fase + Game.getInstance().partida.getFASE();
     }
 
     public void printVidaBar() {
@@ -37,6 +39,14 @@ public abstract class GameObject {
         } else {
             System.out.println("\033[30m ");
         }
+    }
+
+    public boolean isBuild() {
+        boolean hecho = false;
+        if (fasecicle <= Game.getInstance().partida.getFASE()) {
+            hecho = true;
+        }
+        return hecho;
     }
 
     public int getFasecicle() {
@@ -61,10 +71,6 @@ public abstract class GameObject {
 
     public void setLocation(Dimension dim) {
         location = dim;
-    }
-
-    public void setFasecicle(int fasecicle) {
-        this.fasecicle = fasecicle;
     }
 
     public abstract void printCtn();

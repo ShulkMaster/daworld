@@ -12,11 +12,10 @@ public class Match {
     private boolean gameOver = false;
     private int turno;
     private int subfase = 0;
-    private static int FASE = 0;
+    private int FASE = 0;
 
     public Match(int numplayer) {
         jugadores = new Player[numplayer];
-        selfInit(numplayer);
         turno = (int) (Math.random() * numplayer);
     }
 
@@ -27,7 +26,7 @@ public class Match {
     }
 
     public void Start() {
-        infoFase();
+        selfInit(jugadores.length);
         while (!gameOver) {
             jugada();
             togglePlayer();
@@ -46,12 +45,13 @@ public class Match {
         if (subfase >= jugadores.length) {
             incrementFase();
             subfase = 0;
-            infoFase();
         }
     }
 
     private void incrementFase() {
         for (Player cplayer : jugadores) {
+            System.out.print("\033[34mResumen: ");
+            System.out.println(cplayer.name);
             cplayer.battlefield.updateContent();
             cplayer.battlefield.clearContent();
         }
@@ -74,6 +74,7 @@ public class Match {
     }
 
     private void printOptions(Player cPlayer) {
+        infoFase();
         System.out.println("\033[34m_________________________________________");
         System.out.println("\033[34m               Turno " + jugadores[turno].name);
         System.out.println("\033[34m_________________________________________");
@@ -151,13 +152,20 @@ public class Match {
             }
         }
         if (jugadoresEnPie <= 1) {
+            for (Player cPlay : jugadores) {
+                if (!cPlay.defeated) {
+                    System.out.println("\033[34m_________________________________________");
+                    System.out.println("\033[34m              GANADOR " + cPlay.name);
+                    System.out.println("\033[34m_________________________________________");
+                }
+            }
             gameOver = true;
         }
     }
 
     private void printPlayer() {
         for (int i = 0; i < jugadores.length; i++) {
-            if (!jugadores[i].name.equals(jugadores[turno].name)) {
+            if (!jugadores[i].name.equals(jugadores[turno].name) && !jugadores[i].defeated) {
                 System.out.println(i + ")" + jugadores[i].name);
             }
         }
@@ -180,7 +188,11 @@ public class Match {
         return valid;
     }
 
-    public int getTurno() {
-        return turno;
+    public Player getPlayer() {
+        return jugadores[turno];
+    }
+
+    public int getFASE() {
+        return FASE;
     }
 }

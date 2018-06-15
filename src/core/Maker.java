@@ -5,8 +5,7 @@ package core;
  * @author yury_
  */
 import factory.ObjMaker;
-import factory.catalog.GameObjectType;
-import factory.concreteFak.*;
+import factory.gameObjs.troops.Tropa;
 
 public class Maker{
 
@@ -48,6 +47,10 @@ public class Maker{
                 CmakeObjectFak = null;
         }
         return CmakeObjectFak;
-    }
+    }    
 */
+    public void createTroop(int[] order){
+        
+    
+    }
 }

@@ -8,6 +8,8 @@ import factory.gameObjs.struchas.Cuartel;
 import factory.gameObjs.struchas.Extractor;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import core.Game;
+import factory.gameObjs.troops.Tropa;
 
 /**
  *
@@ -36,7 +38,11 @@ public class InnerController {
         } else if ((x == 0) && (y == 0) && victim.battlefield.morObj()) {
             System.err.println("No se puede atacar al centro de mando si hay mas edificion en pie");
         } else {
-            victim.battlefield.receiveAttack(x, y, 300);
+            ArrayList<Strux> mono = attacker.battlefield.getStrucType(Strucha.CUARTEL);
+            int zanverx = 0;
+            zanverx = mono.stream().map((temp) -> temp.getMAX()).reduce(zanverx, Integer::sum);
+            victim.battlefield.receiveAttack(x, y, zanverx);
+            System.out.println("Son de daño:"+zanverx);
         }
     }
 
@@ -46,13 +52,46 @@ public class InnerController {
             System.out.print(i + ")");
             auxc.get(i).printCtn();
         }
-        if(auxc.size()>0){
-        System.out.println("Seleccione un cuartel para entrenar");
-        mylord.control.nextInt();
-        }else{
+        if (auxc.size() > 0) {
+            System.out.println("Seleccione un cuartel para entrenar");
+            int amp = mylord.control.nextInt();
+            printTroop(mylord);
+            auxc.get(amp).exec(mylord);
+        } else {
             System.err.println("Cree cuarteles primero");
         }
 
+    }
+
+    public static void createTroop(Cuartel Strex) {
+        int[] soldStatc = statscalc(Strex.praza);
+        Tropa trupix;
+        switch (Game.getInstance().partida.getPlayer().control.nextInt()) {
+            case 1:
+                soldStatc[5] = 1;
+                trupix = new Tropa(soldStatc);
+                trupix.name = "Basic " + Strex.praza;
+                Strex.setMoreTroop(trupix);
+                break;
+            case 2:
+                soldStatc[5] = 2;
+                soldStatc = statsUpdate(soldStatc, 1);
+                trupix = new Tropa(soldStatc);
+                trupix.name = "Pro " + Strex.praza;
+                Strex.setMoreTroop(trupix);
+                break;
+            case 3:
+                soldStatc[5] = 3;
+                soldStatc = statsUpdate(soldStatc, 2);
+                trupix = new Tropa(soldStatc);
+                trupix.name = "Ultimate " + Strex.praza;
+                Strex.setMoreTroop(trupix);
+                break;
+            default:
+                System.out.println("Opcion invalida");
+                createTroop(Strex);
+                break;
+        }
     }
 
     public static void addStruck(Player mylord) {
@@ -120,13 +159,13 @@ public class InnerController {
         Recursos[] aux = getRsourc(R1);
         switch (index) {
             case 0:
-                Cobj = new Extractor(800, 120, R1, aux[0]);
+                Cobj = new Extractor(800, 800, R1, aux[0]);
                 break;
             case 1:
-                Cobj = new Extractor(800, 60, R1, aux[1]);
+                Cobj = new Extractor(800, 500, R1, aux[1]);
                 break;
             case 2:
-                Cobj = new Extractor(1020, 25, R1, aux[2]);
+                Cobj = new Extractor(1020, 300, R1, aux[2]);
                 break;
             default:
                 System.err.println("Le toco un extractor defectuoso");
@@ -134,6 +173,91 @@ public class InnerController {
                 break;
         }
         return Cobj;
+    }
+
+    private static void printTroop(Player lord) {
+        int[] ram = statscalc(lord.getRaza());
+        System.out.println("Tropas disponibles: " + lord.getRaza());
+        System.out.print("1) Basic " + lord.getRaza() + ": " + ram[0] + "UD, " + ram[1] + "UDV, " + ram[2] + " Fase Entrenamiento ");
+        System.out.println(ram[3] + " " + lord.battlefield.CM.recurs[0].name() + ", " + ram[4] + " " + lord.battlefield.CM.recurs[1]);
+        ram = statsUpdate(ram, 1);
+        System.out.print("2) Pro " + lord.getRaza() + ": " + ram[0] + "UD, " + ram[1] + "UDV, " + ram[2] + " Fase Entrenamiento ");
+        System.out.println(ram[3] + " " + lord.battlefield.CM.recurs[0].name() + ", " + ram[4] + " " + lord.battlefield.CM.recurs[2]);
+        ram = statscalc(lord.getRaza());
+        ram = statsUpdate(ram, 2);
+        System.out.print("3) Ultimate " + lord.getRaza() + ": " + ram[0] + "UD, " + ram[1] + "UDV, " + ram[2] + " Fase Entrenamiento ");
+        System.out.println(ram[3] + " " + lord.battlefield.CM.recurs[1].name() + ", " + ram[4] + " " + lord.battlefield.CM.recurs[2]);
+    }
+
+    private static int[] statsUpdate(int[] base, int xtend) {
+        int[] aux = base;
+        float[] shout = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+        switch (xtend) {
+            case 0:
+                //0 attack
+                //1 life
+                //2 fase
+                //3 recurso 1
+                //4 recurso 2
+                break;
+            case 1:
+                shout[0] = 2.5f;
+                shout[1] = 2.0f;
+                shout[2] = 1.0f;
+                shout[3] = 2.6f;
+                shout[4] = 1.7f;
+                break;
+            case 2:
+                shout[0] = 3.6f;
+                shout[1] = 3.3f;
+                shout[2] = 2.0f;
+                shout[3] = 3.0f;
+                shout[4] = 2.0f;
+                break;
+        }
+        for (int i = 0; i < 5; i++) {
+            if (i != 2) {
+                aux[i] *= shout[i];
+            } else {
+                aux[i] += shout[i];
+            }
+        }
+        return aux;
+    }
+
+    private static int[] statscalc(Razas R) {
+        int[] aux = new int[6];
+        switch (R) {
+            case HUMANO:
+                aux[0] = 45;
+                aux[1] = 100;
+                aux[2] = 1;
+                aux[3] = 180;
+                aux[4] = 90;
+                break;
+            case ELFO:
+                aux[0] = 35;
+                aux[1] = 160;
+                aux[2] = 2;
+                aux[3] = 210;
+                aux[4] = 110;
+                break;
+            case DEMONIO:
+                aux[0] = 95;
+                aux[1] = 155;
+                aux[2] = 2;
+                aux[3] = 310;
+                aux[4] = 170;
+                break;
+            case ANGEL:
+                aux[0] = 150;
+                aux[1] = 110;
+                aux[2] = 2;
+                aux[3] = 170;
+                aux[4] = 120;
+                break;
+        }
+        return aux;
     }
 
 }

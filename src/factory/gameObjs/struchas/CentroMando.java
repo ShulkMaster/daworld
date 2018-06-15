@@ -19,16 +19,16 @@ public class CentroMando extends Strux {
         super(vida, 0, ras);
         recurs = new Recursos[3];
         recux = new int[3];
-        recux[0] = 5000;
-        recux[1] = 2500;
-        recux[2] = 1250;
+        recux[0] = 1200;
+        recux[1] = 800;
+        recux[2] = 500;
         nameresour(ras);
         type = Strucha.CENTROMANDO;
     }
 
     public void nameit() {
         setName("Centro Mando: " + praza + " ");
-        setMAX(8000);
+        setMAX(10000);
     }
 
     private void nameresour(Razas rax) {
@@ -56,6 +56,18 @@ public class CentroMando extends Strux {
             cont++;
         }
         return aux;
+    }
+
+    public boolean comprarReady(int index, int cant) {
+        boolean liquides = false;
+        if (recux[index] >= cant) {
+            liquides = true;
+        }
+        return liquides;
+    }
+
+    public void comprar(int index, int cant) {
+        recux[index] -= cant;
     }
 
     public void getResort(int cant, Recursos rex) {

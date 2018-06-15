@@ -24,7 +24,7 @@ public class Plano {
 
     public void addCommandCenter(Player Mylord) {
         if (Mylord.battlefield.celdas[0][0].getEst().equals(Estado.VACIO)) {
-            CentroMando ctn = new CentroMando(1500, Mylord.getRaza());
+            CentroMando ctn = new CentroMando(2500, Mylord.getRaza());
             ctn.nameit();
             CM = ctn;
             Mylord.battlefield.celdas[0][0].setContenido(ctn);

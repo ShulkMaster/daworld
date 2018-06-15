@@ -6,11 +6,13 @@ package core;
  */
 //singleton pero mas pro
 import gameEntity.Match;
+import java.util.Scanner;
 public class Game {
 
     private final Menu mainmenu = Menu.getInstance();
+    private final Scanner asker = new Scanner(System.in);
     public static final Maker FABRICA = Maker.getInstace();
-    private Match partida;
+    public Match partida;
 
     private Game() {
     }
@@ -25,7 +27,8 @@ public class Game {
 
     public void start() {
         mainmenu.showmenu();
-        partida = new Match(3);
+        System.out.println("Cuantos jugaran?");
+        partida = new Match(asker.nextInt());
         partida.Start();
     }
 
